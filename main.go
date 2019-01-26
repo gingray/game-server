@@ -56,19 +56,6 @@ func CheckError(err error) {
 	}
 }
 
-func Route(evt *Evt) {
-	switch evt.Type{
-	case "AUTH":
-		actions.HandleAuth(evt)
-	case "LIST":
-		actions.HandleList(evt)
-	case "STATE":
-		actions.HandleState(evt)
-	default:
-		println("Unknown evt: [%s]", evt.Type)
-	}
-}
-
 
 
 //nc -u localhost 10001 < auth.json
