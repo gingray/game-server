@@ -8,12 +8,13 @@ import (
 
 func HandleList(evt *entities.Evt) {
 		var listPlayers []entities.Player
-		entities.Players.Range(func(_, value interface{}) bool {
+		defaultPlayersStore := entities.GetDefaultPlayersStorage()
+		defaultPlayersStore.Players.Range(func(_, value interface{}) bool {
 			listPlayers = append(listPlayers,value.(entities.Player))
 
 			return true
 		})
 		resp, _ := json.Marshal(listPlayers)
-	ServerConn.WriteToUDP(resp, evt.Addr)
+	_,_ = defaultPlayersStore.Conn.WriteToUDP(resp, evt.Addr)
 
 }

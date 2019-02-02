@@ -8,11 +8,11 @@ import (
 
 func HandleAuth(evt *entities.Evt) {
 	id, _ := uuid.NewV4()
-	player := entities.Player{Id: id.String(), Position: entities.Vector{X: 0, Y: 0}}
-	entities.Players.Store(id, player)
+	player := entities.Player{Id: id.String(), Position: entities.Vector{X: 0, Y: 0}, Conn: evt.Addr}
+	defautPlayersStore := entities.GetDefaultPlayersStorage()
+	defautPlayersStore.Players.Store(id, player)
 	resp, _ :=json.Marshal(player)
-	ServerConn.WriteToUDP(resp, evt.Addr)
-
+	_,_ = defautPlayersStore.Conn.WriteToUDP(resp, evt.Addr)
 }
 
 

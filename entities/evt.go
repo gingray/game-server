@@ -12,6 +12,6 @@ type Evt struct {
 }
 
 func FetchEvt(msg []byte) (evt *Evt) {
-	json.Unmarshal(msg, &evt)
+	_ = json.Unmarshal(msg, &evt)
 	return evt
 }

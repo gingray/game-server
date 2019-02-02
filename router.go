@@ -11,8 +11,8 @@ func Route(evt *entities.Evt) {
 		actions.HandleAuth(evt)
 	case "LIST":
 		actions.HandleList(evt)
-	case "STATE":
-		actions.HandleState(evt)
+	case "COMMAND":
+		actions.HandleCommand(evt)
 	default:
 		println("Unknown evt: [%s]", evt.Type)
 	}
