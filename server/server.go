@@ -28,7 +28,7 @@ func StartServer(port int) {
 
 	for {
 		n, addr, err := ServerConn.ReadFromUDP(buf)
-		evt := FetchEvt(buf[0:n])
+		evt := FetchEvt(buf[:n])
 		evt.Addr = addr
 		Route(evt)
 
