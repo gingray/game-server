@@ -1,6 +1,7 @@
 {
   "Evt": "COMMAND",
   "Payload": {
-    "Command": "RIGHT"
+    "Command": "RIGHT",
+    "PlayerId": "plyaer id here"
   }
 }
