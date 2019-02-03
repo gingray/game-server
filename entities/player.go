@@ -13,12 +13,12 @@ type Player struct {
 var defaultPlayersStorage *PlayerStorage
 
 type PlayerStorage struct {
-	Players map[string]Player
+	Players map[string]*Player
 	Conn *net.UDPConn
 }
 
 func (store *PlayerStorage) AddPlayer(key string, player Player) {
-	store.Players[key] = player
+	store.Players[key] = &player
 }
 
 func (store *PlayerStorage) RemovePlayer(key string) {
@@ -26,7 +26,7 @@ func (store *PlayerStorage) RemovePlayer(key string) {
 }
 
 func CreatePlayerStorage() *PlayerStorage {
-	return &PlayerStorage{Players: map[string]Player{}}
+	return &PlayerStorage{Players: map[string]*Player{}}
 }
 //TODO: Make thread safe
 func GetDefaultPlayersStorage() *PlayerStorage {

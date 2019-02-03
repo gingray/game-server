@@ -31,7 +31,6 @@ func StartServer(port int) {
 		evt := FetchEvt(buf[0:n])
 		evt.Addr = addr
 		Route(evt)
-		fmt.Println("Received ",string(buf[0:n]), " from ",addr)
 
 		if err != nil {
 			fmt.Println("Error: ",err)

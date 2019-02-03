@@ -16,16 +16,33 @@ func init() {
 	}()
 }
 
-func GetAuthEventFixture(filename string) []byte {
+func GetAuthEventFixture(filename string, playerId *string) []byte {
 	bytes, _:=ioutil.ReadFile(filepath.Join("../test-fixture", filename))
+	if playerId != nil {
+		var extra map[string]interface{}
+		json.Unmarshal(bytes, &extra)
+		extra["Payload"].(map[string]interface{})["PlayerId"]= playerId
+		payload, _ := json.Marshal(extra)
+		return payload
+	}
 	return bytes
 }
-func AuthOnServer(conn net.Conn) []byte {
-	authEvtBytes := GetAuthEventFixture("auth.json")
+func AuthOnServer(conn net.Conn) ([]byte, string) {
+	authEvtBytes := GetAuthEventFixture("auth.json", nil)
 	conn.Write(authEvtBytes)
 	out := make([]byte, 1024)
 	size, _:=conn.Read(out)
-	return out[:size]
+	var data map[string]interface{}
+	json.Unmarshal(out[:size], &data)
+	playerId := data["PlayerId"].(string)
+	return out[:size], playerId
+}
+
+func WriteAndReadResponse(conn net.Conn, bytes []byte) string {
+	conn.Write(bytes)
+	out := make([]byte, 1024)
+	rBytes, _ :=conn.Read(out)
+	return string(out[:rBytes])
 }
 
 func TestNETServer_Run(t *testing.T) {
@@ -40,7 +57,7 @@ func TestNETServer_Run(t *testing.T) {
 
 func TestNETServer_SendAuthEvt(t *testing.T) {
 	conn, err := net.Dial("udp", ":10002")
-	resp := AuthOnServer(conn)
+	resp,_ := AuthOnServer(conn)
 	fmt.Printf("%s", string(resp))
 	if err != nil {
 		t.Error(err)
@@ -51,19 +68,14 @@ func TestNETServer_SendAuthEvt(t *testing.T) {
 
 func TestNETServer_SendCommand(t *testing.T) {
 	conn, err := net.Dial("udp", ":10002")
-	resp := AuthOnServer(conn)
-	var data map[string]interface{}
-	json.Unmarshal(resp, &data)
-	playerId := data["PlayerId"].(string)
-	var evt map[string]interface{}
+	_, playerId := AuthOnServer(conn)
 
-	json.Unmarshal(GetAuthEventFixture("command.json"), &evt)
-	evt["Payload"].(map[string]interface{})["PlayerId"]= playerId
-	bytes, err := json.Marshal(evt)
-	conn.Write(bytes)
-	out := make([]byte, 1024)
-	rBytes, _ :=conn.Read(out)
-	fmt.Printf("resp: %s\n", string(out[:rBytes]))
+	bytes :=GetAuthEventFixture("command_1.json", &playerId)
+	bytes_2:=GetAuthEventFixture("command_2.json", &playerId)
+	resp:=WriteAndReadResponse(conn, bytes)
+	resp =WriteAndReadResponse(conn, bytes)
+	resp =WriteAndReadResponse(conn, bytes_2)
+	fmt.Printf("resp: %s\n", resp)
 	if err != nil {
 		t.Error(err)
 	}
