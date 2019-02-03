@@ -30,6 +30,8 @@ func StartServer(port int) {
 		n, addr, err := ServerConn.ReadFromUDP(buf)
 		evt := FetchEvt(buf[:n])
 		evt.Addr = addr
+		fmt.Println("Connection from: ",addr)
+		fmt.Println("Data received: ",string(buf[:n]))
 		Route(evt)
 
 		if err != nil {
