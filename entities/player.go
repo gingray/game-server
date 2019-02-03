@@ -2,32 +2,31 @@ package entities
 
 import (
 	"net"
-	"sync"
 )
 
 type Player struct {
-	Id string `json:"id"`
-	Position Vector `json:"position"`
+	Id string `json:"PlayerId"`
+	Position Vector `json:"Position"`
 	Conn *net.UDPAddr `json:"-"`
 }
 
 var defaultPlayersStorage *PlayerStorage
 
 type PlayerStorage struct {
-	Players *sync.Map
+	Players map[string]Player
 	Conn *net.UDPConn
 }
 
 func (store *PlayerStorage) AddPlayer(key string, player Player) {
-	store.Players.Store(key, player)
+	store.Players[key] = player
 }
 
 func (store *PlayerStorage) RemovePlayer(key string) {
-	store.Players.Delete(key)
+	delete(store.Players, key)
 }
 
 func CreatePlayerStorage() *PlayerStorage {
-	return &PlayerStorage{Players: &sync.Map{}}
+	return &PlayerStorage{Players: map[string]Player{}}
 }
 //TODO: Make thread safe
 func GetDefaultPlayersStorage() *PlayerStorage {

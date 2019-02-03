@@ -1,8 +1,8 @@
 package entities
 
 type Vector struct {
-	X int `json:"x"`
-	Y int `json:"y"`
+	X int `json:"X"`
+	Y int `json:"Y"`
 }
 
 

@@ -6,8 +6,8 @@ import (
 )
 
 type Evt struct {
-	Type string `json:"evt"`
-	Payload json.RawMessage `json:"payload"`
+	Type string `json:"Evt"`
+	Payload json.RawMessage `json:"Payload"`
 	Addr *net.UDPAddr `json:"-"`
 }
 

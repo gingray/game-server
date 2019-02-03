@@ -1,0 +1,6 @@
+{
+  "Evt": "COMMAND",
+  "Payload": {
+    "Command": "RIGHT"
+  }
+}
