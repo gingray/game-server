@@ -25,8 +25,6 @@ func (self *Evt) ProcessEvt() {
 	switch self.Type {
 	case "AUTH":
 		HandleAuth(self)
-	case "LIST":
-		HandleList(self)
 	case "COMMAND":
 		HandleCommand(self)
 	default:

@@ -33,6 +33,4 @@ func HandleCommand(evt *Evt) {
 	default:
 		fmt.Println("Unknown command: %s", command.Command)
 	}
-	//resp, _ := json.Marshal(player)
-	//_, _ = playersStore.Conn.WriteToUDP(resp, player.Conn)
 }
