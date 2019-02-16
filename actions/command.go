@@ -16,11 +16,11 @@ type Command struct {
 	Command  string `json:"Command"`
 }
 
-func HandleCommand(evt *entities.Evt) {
-	defaultPlayersStore := entities.GetDefaultPlayersStorage()
+func HandleCommand(evt *Evt) {
+	playersStore := entities.GetOrInitGlobalPlayerStore()
 	var command *Command
 	_ = json.Unmarshal(evt.Payload, &command)
-	player, _ := defaultPlayersStore.Players[command.PlayerId]
+	player:= playersStore.GetPlayer(command.PlayerId)
 	switch command.Command {
 	case RIGHT:
 		player.Position.X += 1
@@ -33,6 +33,4 @@ func HandleCommand(evt *entities.Evt) {
 	default:
 		fmt.Println("Unknown command: %s", command.Command)
 	}
-	resp, _ := json.Marshal(player)
-	_, _ = defaultPlayersStore.Conn.WriteToUDP(resp, player.Conn)
 }

@@ -1,38 +1,57 @@
 package entities
 
-import (
-	"net"
-)
+import "sync"
 
 type Player struct {
-	Id string `json:"PlayerId"`
-	Position Vector `json:"Position"`
-	Conn *net.UDPAddr `json:"-"`
+	Id       string       `json:"PlayerId"`
+	Position Vector       `json:"Position"`
 }
 
-var defaultPlayersStorage *PlayerStorage
+var (
+	globalPlayerStore *PlayerStore
+	mutex sync.Mutex
+)
 
-type PlayerStorage struct {
-	Players map[string]*Player
-	Conn *net.UDPConn
+
+type PlayerStore struct {
+	players map[string]*Player
+	mutex   sync.Mutex
 }
 
-func (store *PlayerStorage) AddPlayer(key string, player Player) {
-	store.Players[key] = &player
+func CreatePlayerStore() *PlayerStore {
+	return &PlayerStore{players: map[string]*Player{}}
 }
 
-func (store *PlayerStorage) RemovePlayer(key string) {
-	delete(store.Players, key)
-}
-
-func CreatePlayerStorage() *PlayerStorage {
-	return &PlayerStorage{Players: map[string]*Player{}}
-}
-//TODO: Make thread safe
-func GetDefaultPlayersStorage() *PlayerStorage {
-	if defaultPlayersStorage == nil {
-		defaultPlayersStorage = CreatePlayerStorage()
+func GetOrInitGlobalPlayerStore() *PlayerStore {
+	if globalPlayerStore == nil {
+		mutex.Lock()
+		if globalPlayerStore == nil {
+			globalPlayerStore = CreatePlayerStore()
+		}
+		mutex.Unlock()
 	}
-	return defaultPlayersStorage
+	return globalPlayerStore
 }
+
+func (store *PlayerStore) AddPlayer(key string, player *Player) {
+	store.players[key] = player
+}
+
+func (self *PlayerStore) GetPlayer(key string) *Player {
+	return self.players[key]
+}
+
+func (store *PlayerStore) RemovePlayer(key string) {
+	delete(store.players, key)
+}
+
+func (self *PlayerStore) GetAllPlayers() (list []*Player) {
+	self.mutex.Lock()
+	for _, v := range self.players {
+		list = append(list, v)
+	}
+	self.mutex.Unlock()
+	return list
+}
+
 
