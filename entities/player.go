@@ -5,16 +5,16 @@ import (
 )
 
 type Player struct {
-	Id string `json:"PlayerId"`
-	Position Vector `json:"Position"`
-	Conn *net.UDPAddr `json:"-"`
+	Id       string       `json:"PlayerId"`
+	Position Vector       `json:"Position"`
+	Conn     *net.UDPAddr `json:"-"`
 }
 
 var defaultPlayersStorage *PlayerStorage
 
 type PlayerStorage struct {
 	Players map[string]*Player
-	Conn *net.UDPConn
+	Conn    *net.UDPConn
 }
 
 func (store *PlayerStorage) AddPlayer(key string, player Player) {
@@ -28,6 +28,7 @@ func (store *PlayerStorage) RemovePlayer(key string) {
 func CreatePlayerStorage() *PlayerStorage {
 	return &PlayerStorage{Players: map[string]*Player{}}
 }
+
 //TODO: Make thread safe
 func GetDefaultPlayersStorage() *PlayerStorage {
 	if defaultPlayersStorage == nil {
@@ -35,4 +36,3 @@ func GetDefaultPlayersStorage() *PlayerStorage {
 	}
 	return defaultPlayersStorage
 }
-

@@ -1,11 +1,6 @@
 package actions
 
-import (
-	"game-server/entities"
-)
-
-
-func HandleList(evt *entities.Evt) {
+func HandleList(evt *Evt) {
 	//	var listPlayers []entities.Player
 	//	defaultPlayersStore := entities.GetDefaultPlayersStorage()
 	//	defaultPlayersStore.Players.Range(func(_, value interface{}) bool {

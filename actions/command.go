@@ -16,7 +16,7 @@ type Command struct {
 	Command  string `json:"Command"`
 }
 
-func HandleCommand(evt *entities.Evt) {
+func HandleCommand(evt *Evt) {
 	defaultPlayersStore := entities.GetDefaultPlayersStorage()
 	var command *Command
 	_ = json.Unmarshal(evt.Payload, &command)
@@ -33,6 +33,6 @@ func HandleCommand(evt *entities.Evt) {
 	default:
 		fmt.Println("Unknown command: %s", command.Command)
 	}
-	resp, _ := json.Marshal(player)
-	_, _ = defaultPlayersStore.Conn.WriteToUDP(resp, player.Conn)
+	//resp, _ := json.Marshal(player)
+	//_, _ = defaultPlayersStore.Conn.WriteToUDP(resp, player.Conn)
 }
