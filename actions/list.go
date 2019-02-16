@@ -3,7 +3,7 @@ package actions
 func HandleList(evt *Evt) {
 	//	var listPlayers []entities.Player
 	//	defaultPlayersStore := entities.GetDefaultPlayersStorage()
-	//	defaultPlayersStore.Players.Range(func(_, value interface{}) bool {
+	//	defaultPlayersStore.p.Range(func(_, value interface{}) bool {
 	//		listPlayers = append(listPlayers,value.(entities.Player))
 	//
 	//		return true
