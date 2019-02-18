@@ -1,6 +1,7 @@
 package main
 
 import (
+	"game-server/entities"
 	"game-server/server"
 )
 
@@ -8,5 +9,7 @@ import (
 //nc -u localhost 10001 < auth.json
 
 func main() {
-	server.StartServer(10001)
+	game:=entities.NewGame()
+	transport:=server.NewTransport(game)
+	server.NewServer(transport, 10001)
 }
