@@ -33,7 +33,7 @@ func listener(dataReaderSocketStore DateReaderSocketStore, sc *net.UDPConn, wg *
 	defer wg.Done()
 	for {
 		size, addr, err := sc.ReadFromUDP(buf)
-		dataReaderSocketStore.ReadData(buf[:size])
+		dataReaderSocketStore.ReadData(buf[:size], addr)
 		dataReaderSocketStore.Add(addr)
 
 		if err != nil {

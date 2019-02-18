@@ -6,7 +6,7 @@ import (
 )
 
 type BytesDataReader interface {
-	ReadData(msg []byte)
+	ReadData(msg []byte, addr *net.UDPAddr)
 }
 
 type BytesStateReader interface {
@@ -34,17 +34,33 @@ type DateReaderSocketStore interface {
 	SocketStore
 }
 
+type SocketKey struct {
+	addr *net.UDPAddr
+	key *string
+}
+
 type Transport struct {
 	game  *entities.Game
-	addrs []*net.UDPAddr
+	pairAddrIds []*PairAddrId
+	addrs map[string]*SocketKey
+
+}
+
+type PairAddrId struct {
+	addr *net.UDPAddr
+	id *string
 }
 
 func NewTransport(game *entities.Game) *Transport {
-	return &Transport{game: game, addrs: []*net.UDPAddr{}}
+	return &Transport{game: game, pairAddrIds: []*PairAddrId{}}
 }
 
-func (self *Transport) ReadData(msg []byte) {
-	self.game.Fetch(string(msg))
+func (self *Transport) ReadData(msg []byte, addr *net.UDPAddr) {
+	id:=self.game.Fetch(string(msg))
+	if self.addrs[addr.String()].key == nil {
+		self.addrs[addr.String()].key = id
+	}
+
 }
 
 func (self *Transport) ReadState() []byte {
@@ -53,10 +69,15 @@ func (self *Transport) ReadState() []byte {
 }
 
 func (self *Transport) Add(addr *net.UDPAddr) {
-	self.addrs = append(self.addrs, addr)
+	self.addrs[addr.String()] = &SocketKey{addr: addr, key:nil}
 }
 
 func (self *Transport) All() []*net.UDPAddr {
 	tmp := make([]*net.UDPAddr, len(self.addrs))
+	idx :=0
+	for _, item := range self.addrs {
+		tmp[idx] = item.addr
+		idx+=1
+	}
 	return tmp
 }
