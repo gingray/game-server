@@ -3,6 +3,7 @@ package server
 import (
 	"game-server/entities"
 	"net"
+	"sync"
 )
 
 type BytesDataReader interface {
@@ -43,6 +44,7 @@ type Transport struct {
 	game  *entities.Game
 	pairAddrIds []*PairAddrId
 	addrs map[string]*SocketKey
+	mutex sync.RWMutex
 
 }
 
@@ -69,15 +71,19 @@ func (self *Transport) ReadState() []byte {
 }
 
 func (self *Transport) Add(addr *net.UDPAddr) {
+	self.mutex.Lock()
 	self.addrs[addr.String()] = &SocketKey{addr: addr, key:nil}
+	self.mutex.Unlock()
 }
 
 func (self *Transport) All() []*net.UDPAddr {
 	tmp := make([]*net.UDPAddr, len(self.addrs))
 	idx :=0
+	self.mutex.RLock()
 	for _, item := range self.addrs {
 		tmp[idx] = item.addr
 		idx+=1
 	}
+	self.mutex.RUnlock()
 	return tmp
 }

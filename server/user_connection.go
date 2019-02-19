@@ -10,10 +10,6 @@ type UserConnections struct {
 	mutex       sync.Mutex
 }
 
-func CreateUserConnectionsStore() (val *UserConnections) {
-	return &UserConnections{connections: map[string]*net.UDPAddr{}}
-}
-
 func (self *UserConnections) AddConnection(conn *net.UDPAddr) {
 	self.mutex.Lock()
 	self.connections[conn.String()] = conn
