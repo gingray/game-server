@@ -35,6 +35,7 @@ func listener(dataReaderSocketStore DateReaderSocketStore, sc *net.UDPConn, wg *
 		size, addr, err := sc.ReadFromUDP(buf)
 		dataReaderSocketStore.ReadData(buf[:size], addr)
 		dataReaderSocketStore.Add(addr)
+		fmt.Println("Msg received: %s", string(buf[:size]))
 
 		if err != nil {
 			fmt.Println("Error: ", err)

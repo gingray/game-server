@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"game-server/entities"
 	"game-server/test"
 	"net"
 	"testing"
@@ -10,7 +11,9 @@ import (
 func init() {
 
 	go func() {
-		StartServer(10002)
+		game:=entities.NewGame()
+		transport:=NewTransport(game)
+		NewServer(transport, 10001)
 	}()
 }
 

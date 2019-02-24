@@ -81,8 +81,9 @@ func (self *Transport) All() []*net.UDPAddr {
 	tmp := make([]*net.UDPAddr, len(self.addrs))
 	idx :=0
 	self.mutex.RLock()
-	fmt.Printf("Broadcast: ")
+
 	for _, item := range self.addrs {
+		fmt.Printf("Broadcast: %s", *item.key)
 		tmp[idx] = item.addr
 		idx+=1
 	}
