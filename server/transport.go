@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"game-server/entities"
 	"net"
 	"sync"
@@ -59,10 +60,10 @@ func NewTransport(game *entities.Game) *Transport {
 
 func (self *Transport) ReadData(msg []byte, addr *net.UDPAddr) {
 	id:=self.game.Fetch(string(msg))
+	fmt.Printf("Evt received: %s", msg)
 	if self.addrs[addr.String()].key == nil {
 		self.addrs[addr.String()].key = id
 	}
-
 }
 
 func (self *Transport) ReadState() []byte {
@@ -80,6 +81,7 @@ func (self *Transport) All() []*net.UDPAddr {
 	tmp := make([]*net.UDPAddr, len(self.addrs))
 	idx :=0
 	self.mutex.RLock()
+	fmt.Printf("Broadcast: ")
 	for _, item := range self.addrs {
 		tmp[idx] = item.addr
 		idx+=1
